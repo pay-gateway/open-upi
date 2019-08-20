@@ -1,7 +1,7 @@
 # open-upi
 A simple UPI payment gateway with zero cost. Made for Android.
 
-<img src="https://raw.githubusercontent.com/theapache64/open-upi/master/demo.gif" width="300">
+<img src="https://github.com/theapache64/open-upi/blob/master/demo.gif?raw=true" width="300">
 
 ### Installation
 
