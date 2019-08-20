@@ -32,11 +32,13 @@ class App : Application() {
 
 **STEP 2**
 
-Start transaction
+Start transaction anywhere you want
 
 ```kotlin
-OpenUPI.newTransaction(amount) 
-       .start(this)
+fun onPayClicked(){
+    OpenUPI.newTransaction(amount) 
+           .start(this)
+}
 ```
 
 **STEP 3**
