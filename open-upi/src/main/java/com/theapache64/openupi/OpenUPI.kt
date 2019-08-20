@@ -3,8 +3,7 @@ package com.theapache64.openupi
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import com.theapache64.twinkill.logger.info
-import com.theapache64.twinkill.logger.mistake
+import android.util.Log
 import java.net.URLEncoder
 
 
@@ -12,6 +11,7 @@ import java.net.URLEncoder
  * This API compliance to https://www.npci.org.in/sites/all/themes/npcl/images/PDF/UPI_Linking_Specs_ver_1.5.1.pdf
  */
 object OpenUPI {
+    private val TAG = OpenUPI::class.java.simpleName
 
 
     const val REQUEST_CODE = 324
@@ -66,12 +66,6 @@ object OpenUPI {
         if (bundle != null) {
             for (key in bundle.keySet()) {
                 val value = bundle.get(key)
-                info(
-                    String.format(
-                        "KEY:'%s' VALUE:'%s' TYPE:'%s'", key,
-                        value, value?.javaClass?.name
-                    )
-                )
             }
         }
     }
@@ -88,7 +82,6 @@ object OpenUPI {
         }
 
         val upiString = "upi://pay?$paramsBuilder"
-        info("UPI String: $upiString")
 
         val intent = Intent()
         intent.action = Intent.ACTION_VIEW
@@ -155,14 +148,13 @@ object OpenUPI {
                     }
 
                 } else {
-                    mistake("Data is null")
                     callback.onFailure("Returned data is null", null)
                 }
             } else {
                 callback.onFailure("Transaction failed", null)
             }
         } else {
-            mistake("Activity result is not from OpenUPI")
+            Log.e(TAG, "Activity result is not from OpenUPI")
         }
     }
 
