@@ -1,39 +1,68 @@
 package com.theapache64.openupiexample
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-
-import kotlinx.android.synthetic.main.activity_main.*
+import com.theapache64.openupi.OpenUPI
+import com.theapache64.openupi.TransactionCallback
+import com.theapache64.openupi.TransactionResult
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+
+        // For the sake of a simple example, we're using constant amount
+        private const val AMOUNT = 9596f
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+
+        findViewById<Button>(R.id.b_pay).setOnClickListener {
+            // Pay button clicked, starting transaction
+            OpenUPI.newTransaction(AMOUNT)
+                .start(this)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == OpenUPI.REQUEST_CODE) {
+
+            OpenUPI.handleActivityResult(
+                AMOUNT,
+                requestCode,
+                resultCode,
+                data,
+                object : TransactionCallback {
+
+                    override fun onSubmitted(transactionResult: TransactionResult) {
+                        // Transaction submitted/pending
+                        toast("Transaction submitted")
+                    }
+
+                    override fun onSuccess(transactionResult: TransactionResult) {
+                        // Transaction fully succeeded
+                        toast("Transaction succeeded")
+                    }
+
+                    override fun onFailure(message: String, transactionResult: TransactionResult?) {
+                        // Transaction failed
+                        toast("Transaction failed : '$message'")
+                    }
+                })
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
 }

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':open-upi'
 rootProject.name='Open-UPI Example'
